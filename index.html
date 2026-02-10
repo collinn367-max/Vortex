@@ -4,38 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VORTEX</title>
-</head>
-<body>
 
-<script>
-  // ==========================
-  // GLOBAL STYLE
-  // ==========================
-  const style = document.createElement("style");
-  style.textContent = `
+  <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      overflow: hidden;
       height: 100vh;
-      width: 100vw;
-      color: white;
+      overflow: hidden;
       background: black;
+      color: white;
     }
 
-    /* ===== Animated Background ===== */
+    /* ===== BACKGROUND ===== */
     .background {
-      position: fixed;
+      position: absolute;
       inset: 0;
-      background: linear-gradient(120deg, #000000, #1a1a1a, #111, #000);
-      background-size: 400% 400%;
-      animation: bgMove 12s ease infinite;
-      z-index: -3;
+      background: linear-gradient(120deg, #111, #222, #111);
+      background-size: 300% 300%;
+      animation: bgMove 10s infinite linear;
+      filter: blur(3px);
+      z-index: -2;
     }
 
     @keyframes bgMove {
@@ -44,522 +37,669 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Vignette overlay */
-    .vignette {
-      position: fixed;
+    .darkOverlay {
+      position: absolute;
       inset: 0;
-      background: radial-gradient(circle, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.95) 90%);
-      z-index: -2;
+      background: rgba(0,0,0,0.55);
+      z-index: -1;
     }
 
-    /* ===== Top HUD ===== */
-    .top-hud {
-      position: fixed;
-      top: 18px;
+    /* ===== TOP BAR ===== */
+    .topBar {
+      position: absolute;
+      top: 15px;
+      left: 0;
       width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 180px;
-      font-size: 22px;
-      opacity: 0.9;
-      letter-spacing: 1px;
-      z-index: 5;
-    }
-
-    /* ===== Center Logo ===== */
-    .logo {
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 80px;
-      font-weight: 600;
-      letter-spacing: 8px;
-
-      background: linear-gradient(to bottom, #ffffff, #777777);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      text-shadow: 0px 0px 25px rgba(255,255,255,0.12);
-      opacity: 0.9;
-      z-index: 3;
-    }
-
-    /* ===== Bottom Dock (SLEEK SVG ICONS) ===== */
-    .dock {
-      position: fixed;
-      bottom: 35px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 14px 28px;
-      display: flex;
-      gap: 18px;
-      align-items: center;
-
-      border-radius: 50px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(18px);
-
-      box-shadow: 0px 8px 35px rgba(0,0,0,0.65);
-      z-index: 10;
-    }
-
-    .dock button {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      border: none;
-
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-
-      cursor: pointer;
-      transition: 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.9;
-    }
-
-    .dock button:hover {
-      transform: scale(1.15);
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.18);
-      opacity: 1;
-    }
-
-    .dock button:active {
-      transform: scale(1.05);
-    }
-
-    .dock svg {
-      width: 22px;
-      height: 22px;
-      stroke: white;
-      stroke-width: 2;
-      fill: none;
-      opacity: 0.95;
-    }
-
-    /* ===== Chat Panel ===== */
-    .chat-panel {
-      position: fixed;
-      right: -380px;
-      top: 0;
-      width: 360px;
-      height: 100vh;
-      background: rgba(0,0,0,0.75);
-      border-left: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(14px);
-      transition: 0.3s ease;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .chat-panel.open {
-      right: 0;
-    }
-
-    .chat-header {
-      padding: 18px;
-      font-size: 18px;
-      font-weight: bold;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding: 0 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 20px;
+      opacity: 0.9;
+      z-index: 10;
     }
 
-    .chat-header button {
+    .topLeft {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .topRight {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .clockBtn, .tempBtn {
       background: transparent;
       border: none;
       color: white;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .clockBtn:hover, .tempBtn:hover {
       opacity: 0.7;
     }
 
-    .chat-header button:hover {
-      opacity: 1;
+    .city {
+      font-size: 16px;
+      opacity: 0.7;
     }
 
-    .chat-messages {
+    .weatherIcon {
+      font-size: 22px;
+    }
+
+    /* ===== CENTER TITLE ===== */
+    .title {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      opacity: 0.18;
+      text-transform: uppercase;
+    }
+
+    /* ===== DOCK ===== */
+    .dock {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      padding: 12px 22px;
+      border-radius: 25px;
+      background: rgba(0, 50, 120, 0.35);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      z-index: 20;
+    }
+
+    .dockBtn {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .dockBtn:hover {
+      transform: scale(1.12);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .dockBtn svg {
+      width: 26px;
+      height: 26px;
+      stroke: white;
+      stroke-width: 1.8;
+      fill: none;
+      opacity: 0.9;
+    }
+
+    /* ===== CHAT PANEL ===== */
+    .chatPanel {
+      position: fixed;
+      bottom: 95px;
+      right: 35px;
+      width: 320px;
+      height: 420px;
+      background: rgba(20, 20, 30, 0.8);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .chatPanel.hidden {
+      display: none;
+    }
+
+    .chatHeader {
+      padding: 14px;
+      font-weight: bold;
+      font-size: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      opacity: 0.9;
+    }
+
+    .chatMessages {
       flex: 1;
-      padding: 18px;
+      padding: 12px;
       overflow-y: auto;
       font-size: 14px;
-      line-height: 1.4;
+      opacity: 0.85;
     }
 
-    .msg {
-      margin-bottom: 14px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      max-width: 90%;
-      white-space: pre-wrap;
-    }
-
-    .msg.ai {
-      background: rgba(0, 90, 255, 0.22);
-      border: 1px solid rgba(0, 90, 255, 0.28);
-    }
-
-    .msg.user {
-      margin-left: auto;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .chat-input {
-      padding: 14px;
-      border-top: 1px solid rgba(255,255,255,0.12);
+    .chatInputArea {
       display: flex;
-      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    .chat-input input {
+    .chatInputArea input {
       flex: 1;
       padding: 10px;
-      border-radius: 10px;
       border: none;
       outline: none;
       background: rgba(255,255,255,0.08);
       color: white;
     }
 
-    .chat-input button {
+    .chatInputArea button {
       padding: 10px 14px;
-      border-radius: 10px;
       border: none;
       cursor: pointer;
-      background: rgba(255,255,255,0.12);
+      background: rgba(0, 120, 255, 0.6);
       color: white;
       font-weight: bold;
+    }
+
+    /* ===== MUSIC PANEL ===== */
+    .musicPanel {
+      position: fixed;
+      bottom: 95px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 760px;
+      height: 420px;
+      display: flex;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 26px;
+      background: rgba(10, 15, 25, 0.75);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+      z-index: 999;
+    }
+
+    .musicPanel.hidden {
+      display: none;
+    }
+
+    .musicLeft,
+    .musicRight {
+      flex: 1;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .albumArt {
+      width: 100%;
+      height: 220px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .musicNote {
+      font-size: 80px;
+      opacity: 0.25;
+      color: white;
+    }
+
+    .nowPlayingText {
+      margin-top: 14px;
+      color: white;
+    }
+
+    .songTitle {
+      font-size: 20px;
+      font-weight: 700;
+      opacity: 0.95;
+    }
+
+    .songSub {
+      font-size: 14px;
+      opacity: 0.6;
+      margin-top: 6px;
+    }
+
+    .progressBar {
+      height: 5px;
+      margin-top: 14px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .musicControls {
+      margin-top: auto;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding-top: 18px;
+    }
+
+    .musicBtn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
       transition: 0.2s;
     }
 
-    .chat-input button:hover {
-      background: rgba(255,255,255,0.18);
-    }
-  `;
-  document.head.appendChild(style);
-
-  // ==========================
-  // SVG ICONS
-  // ==========================
-  function svgIcon(type) {
-    if (type === "home") {
-      return `
-        <svg viewBox="0 0 24 24">
-          <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
-        </svg>
-      `;
+    .musicBtn:hover {
+      background: rgba(255, 255, 255, 0.22);
     }
 
-    if (type === "apps") {
-      return `
-        <svg viewBox="0 0 24 24">
-          <rect x="4" y="4" width="6" height="6" rx="1"></rect>
-          <rect x="14" y="4" width="6" height="6" rx="1"></rect>
-          <rect x="4" y="14" width="6" height="6" rx="1"></rect>
-          <rect x="14" y="14" width="6" height="6" rx="1"></rect>
-        </svg>
-      `;
+    .musicPlay {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.85);
+      color: black;
+      font-size: 22px;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    if (type === "chat") {
-      return `
-        <svg viewBox="0 0 24 24">
-          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
-        </svg>
-      `;
+    .musicPlay:hover {
+      transform: scale(1.08);
     }
 
-    if (type === "settings") {
-      return `
-        <svg viewBox="0 0 24 24">
-          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-          <path d="M19.4 15a7.7 7.7 0 0 0 .1-1l2-1.5-2-3.5-2.4.7a7.6 7.6 0 0 0-1.7-1l-.4-2.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-.7-2 3.5 2 1.5a7.7 7.7 0 0 0 .1 1 7.7 7.7 0 0 0-.1 1l-2 1.5 2 3.5 2.4-.7a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4.7 2-3.5-2-1.5a7.7 7.7 0 0 0-.1-1z"/>
-        </svg>
-      `;
+    .musicSearchBar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
     }
 
-    if (type === "power") {
-      return `
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2v10"/>
-          <path d="M6.4 4.9a9 9 0 1 0 11.2 0"/>
-        </svg>
-      `;
+    .musicSearchBar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 15px;
     }
 
-    return "";
-  }
-
-  // ==========================
-  // HELPER FUNCTIONS
-  // ==========================
-  function createDiv(className, id) {
-    const div = document.createElement("div");
-    if (className) div.className = className;
-    if (id) div.id = id;
-    return div;
-  }
-
-  function createDockButton(iconType, title, id) {
-    const btn = document.createElement("button");
-    btn.innerHTML = svgIcon(iconType);
-    btn.title = title;
-    if (id) btn.id = id;
-    return btn;
-  }
-
-  // ==========================
-  // BUILD UI
-  // ==========================
-  const background = createDiv("background");
-  const vignette = createDiv("vignette");
-
-  const topHud = createDiv("top-hud");
-  const timeEl = createDiv(null, "time");
-  const tempEl = createDiv(null, "temp");
-
-  timeEl.textContent = "--:--";
-  tempEl.textContent = "Loading...";
-
-  topHud.appendChild(timeEl);
-  topHud.appendChild(tempEl);
-
-  const logo = createDiv("logo");
-  logo.textContent = "VORTEX";
-
-  const dock = createDiv("dock");
-  dock.appendChild(createDockButton("home", "Home"));
-  dock.appendChild(createDockButton("apps", "Apps"));
-  dock.appendChild(createDockButton("chat", "AI Chat", "chatBtn"));
-  dock.appendChild(createDockButton("settings", "Settings"));
-  dock.appendChild(createDockButton("power", "Power"));
-
-  // ==========================
-  // CHAT PANEL
-  // ==========================
-  const chatPanel = createDiv("chat-panel", "chatPanel");
-
-  const chatHeader = createDiv("chat-header");
-  chatHeader.innerHTML = `
-    <span>VORTEX AI</span>
-    <button id="closeChat">✖</button>
-  `;
-
-  const chatMessages = createDiv("chat-messages", "chatMessages");
-  const firstMsg = createDiv("msg ai");
-  firstMsg.textContent = "Hello 👋 I’m VORTEX AI. (Chat is still offline right now.)";
-  chatMessages.appendChild(firstMsg);
-
-  const chatInputWrap = createDiv("chat-input");
-  const chatInput = document.createElement("input");
-  chatInput.placeholder = "Type a message...";
-  chatInput.id = "chatInput";
-
-  const sendBtn = document.createElement("button");
-  sendBtn.textContent = "Send";
-
-  chatInputWrap.appendChild(chatInput);
-  chatInputWrap.appendChild(sendBtn);
-
-  chatPanel.appendChild(chatHeader);
-  chatPanel.appendChild(chatMessages);
-  chatPanel.appendChild(chatInputWrap);
-
-  // ==========================
-  // APPEND TO BODY
-  // ==========================
-  document.body.appendChild(background);
-  document.body.appendChild(vignette);
-  document.body.appendChild(topHud);
-  document.body.appendChild(logo);
-  document.body.appendChild(dock);
-  document.body.appendChild(chatPanel);
-
-  // ==========================
-  // CLOCK TOGGLE
-  // ==========================
-  let useMilitaryTime = true;
-
-  function formatTime(date) {
-    let hours = date.getHours();
-    let minutes = String(date.getMinutes()).padStart(2, "0");
-
-    if (useMilitaryTime) {
-      return `${String(hours).padStart(2, "0")}:${minutes}`;
-    } else {
-      const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12 || 12;
-      return `${hours}:${minutes} ${ampm}`;
-    }
-  }
-
-  function updateTime() {
-    timeEl.textContent = formatTime(new Date());
-  }
-
-  updateTime();
-  setInterval(updateTime, 1000);
-
-  timeEl.style.cursor = "pointer";
-  timeEl.style.userSelect = "none";
-
-  timeEl.addEventListener("click", () => {
-    useMilitaryTime = !useMilitaryTime;
-    updateTime();
-  });
-
-  // ==========================
-  // WEATHER ICONS (TEXT ICONS)
-  // ==========================
-  function getWeatherIcon(code) {
-    if (code === 0) return "☀️";
-    if ([1, 2].includes(code)) return "🌤️";
-    if (code === 3) return "☁️";
-    if ([45, 48].includes(code)) return "🌫️";
-    if ([51, 53, 55].includes(code)) return "🌦️";
-    if ([61, 63, 65].includes(code)) return "🌧️";
-    if ([71, 73, 75, 77].includes(code)) return "❄️";
-    if ([80, 81, 82].includes(code)) return "🌧️";
-    if ([95, 96, 99].includes(code)) return "⛈️";
-    return "🌡️";
-  }
-
-  // ==========================
-  // WEATHER TOGGLE
-  // ==========================
-  let useFahrenheit = true;
-
-  let lastWeatherData = {
-    tempF: null,
-    tempC: null,
-    city: null,
-    icon: null
-  };
-
-  function displayWeather() {
-    if (!lastWeatherData.city) {
-      tempEl.textContent = "Weather unavailable";
-      return;
+    .searchIcon {
+      opacity: 0.7;
     }
 
-    const temp = useFahrenheit ? lastWeatherData.tempF : lastWeatherData.tempC;
-    const unit = useFahrenheit ? "°F" : "°C";
-
-    tempEl.textContent = `${lastWeatherData.icon} ${temp}${unit} • ${lastWeatherData.city}`;
-  }
-
-  async function updateWeather() {
-    if (!navigator.geolocation) {
-      tempEl.textContent = "Location not supported";
-      return;
+    .filterBtn,
+    .hdBtn {
+      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
     }
 
-    tempEl.textContent = "Loading...";
+    .filterBtn:hover,
+    .hdBtn:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+    .musicResults {
+      flex: 1;
+      margin-top: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      color: white;
+      overflow-y: auto;
+    }
 
-        try {
-          const weatherUrl =
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
+    .emptyResults {
+      opacity: 0.35;
+      font-size: 14px;
+    }
+  </style>
+</head>
 
-          const weatherRes = await fetch(weatherUrl);
-          const weatherData = await weatherRes.json();
+<body>
+  <div class="background"></div>
+  <div class="darkOverlay"></div>
 
-          const tempC = Math.round(weatherData.current.temperature_2m);
-          const tempF = Math.round((tempC * 9) / 5 + 32);
+  <div class="topBar">
+    <div class="topLeft">
+      <button class="clockBtn" id="clockBtn">--:--</button>
+    </div>
 
-          const code = weatherData.current.weather_code;
-          const icon = getWeatherIcon(code);
+    <div class="topRight">
+      <span class="weatherIcon" id="weatherIcon">☁️</span>
+      <button class="tempBtn" id="tempBtn">--°</button>
+      <span class="city" id="cityName">Loading...</span>
+    </div>
+  </div>
 
-          const geoUrl =
-            `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&count=1`;
+  <div class="title">VORTEX</div>
 
-          const geoRes = await fetch(geoUrl);
-          const geoData = await geoRes.json();
+  <div class="dock" id="dock"></div>
 
-          const city = geoData.results?.[0]?.city || "Unknown";
+  <div class="chatPanel hidden" id="chatPanel">
+    <div class="chatHeader">AI Chat</div>
+    <div class="chatMessages" id="chatMessages">
+      <p><b>AI:</b> Hello. Welcome to VORTEX.</p>
+    </div>
+    <div class="chatInputArea">
+      <input type="text" id="chatInput" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
 
-          lastWeatherData.tempC = tempC;
-          lastWeatherData.tempF = tempF;
-          lastWeatherData.city = city;
-          lastWeatherData.icon = icon;
+  <script>
+    const clockBtn = document.getElementById("clockBtn");
+    const tempBtn = document.getElementById("tempBtn");
+    const cityNameEl = document.getElementById("cityName");
+    const weatherIconEl = document.getElementById("weatherIcon");
 
-          displayWeather();
-        } catch (err) {
-          console.error("Weather fetch failed:", err);
-          tempEl.textContent = "Weather unavailable";
-        }
-      },
-      (err) => {
-        console.error("Geolocation error:", err);
-        tempEl.textContent = "Location denied";
+    const dock = document.getElementById("dock");
+
+    const chatPanel = document.getElementById("chatPanel");
+    const chatInput = document.getElementById("chatInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatMessages = document.getElementById("chatMessages");
+
+    let useMilitary = true;
+    let useCelsius = false;
+
+    let lastWeatherData = {
+      tempC: null,
+      tempF: null,
+      city: null,
+      icon: "☁️"
+    };
+
+    let musicPanelOpen = false;
+    let musicPanel;
+
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+
+      if (useMilitary) {
+        clockBtn.textContent = `${hours.toString().padStart(2, "0")}:${minutes}`;
+      } else {
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        clockBtn.textContent = `${hours}:${minutes} ${ampm}`;
       }
-    );
-  }
+    }
 
-  updateWeather();
-  setInterval(updateWeather, 600000);
+    function displayWeather() {
+      if (useCelsius) {
+        tempBtn.textContent = `${lastWeatherData.tempC}°C`;
+      } else {
+        tempBtn.textContent = `${lastWeatherData.tempF}°F`;
+      }
 
-  tempEl.style.cursor = "pointer";
-  tempEl.style.userSelect = "none";
+      cityNameEl.textContent = lastWeatherData.city;
+      weatherIconEl.textContent = lastWeatherData.icon;
+    }
 
-  tempEl.addEventListener("click", () => {
-    useFahrenheit = !useFahrenheit;
-    displayWeather();
-  });
+    function getWeatherIcon(code) {
+      if (code === 0) return "☀️";
+      if (code >= 1 && code <= 3) return "⛅";
+      if (code >= 45 && code <= 48) return "🌫";
+      if (code >= 51 && code <= 67) return "🌧";
+      if (code >= 71 && code <= 77) return "❄️";
+      if (code >= 80 && code <= 82) return "🌦";
+      if (code >= 95) return "⛈";
+      return "☁️";
+    }
 
-  // ==========================
-  // CHAT OPEN / CLOSE
-  // ==========================
-  document.getElementById("chatBtn").addEventListener("click", () => {
-    chatPanel.classList.toggle("open");
-  });
+    async function updateWeather() {
+      if (!navigator.geolocation) {
+        tempBtn.textContent = "No GPS";
+        return;
+      }
 
-  document.getElementById("closeChat").addEventListener("click", () => {
-    chatPanel.classList.remove("open");
-  });
+      tempBtn.textContent = "Loading...";
+      cityNameEl.textContent = "Locating...";
 
-  // ==========================
-  // FAKE CHAT SYSTEM
-  // ==========================
-  function addMessage(text, type) {
-    const msg = document.createElement("div");
-    msg.className = `msg ${type}`;
-    msg.textContent = text;
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
 
-  function sendMessage() {
-    const text = chatInput.value.trim();
-    if (!text) return;
+          try {
+            const weatherUrl =
+              `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
 
-    addMessage(text, "user");
-    chatInput.value = "";
+            const weatherRes = await fetch(weatherUrl);
+            const weatherData = await weatherRes.json();
 
-    setTimeout(() => {
-      addMessage("🤖 (Prototype) " + text, "ai");
-    }, 500);
-  }
+            const tempC = Math.round(weatherData.current.temperature_2m);
+            const tempF = Math.round((tempC * 9) / 5 + 32);
 
-  sendBtn.addEventListener("click", sendMessage);
+            const code = weatherData.current.weather_code;
+            const icon = getWeatherIcon(code);
 
-  chatInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") sendMessage();
-  });
+            const geoUrl =
+              `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&count=1`;
 
-</script>
+            const geoRes = await fetch(geoUrl);
+            const geoData = await geoRes.json();
 
+            const city = geoData.results?.[0]?.city || "Unknown";
+
+            lastWeatherData.tempC = tempC;
+            lastWeatherData.tempF = tempF;
+            lastWeatherData.city = city;
+            lastWeatherData.icon = icon;
+
+            displayWeather();
+          } catch (err) {
+            console.error("Weather fetch failed:", err);
+            tempBtn.textContent = "N/A";
+            cityNameEl.textContent = "Weather unavailable";
+          }
+        },
+        (err) => {
+          console.error("Geolocation error:", err);
+          tempBtn.textContent = "N/A";
+          cityNameEl.textContent = "Location denied";
+        }
+      );
+    }
+
+    clockBtn.addEventListener("click", () => {
+      useMilitary = !useMilitary;
+      updateClock();
+    });
+
+    tempBtn.addEventListener("click", () => {
+      useCelsius = !useCelsius;
+      displayWeather();
+    });
+
+    function createDockButton(type, label, id = "") {
+      const btn = document.createElement("div");
+      btn.className = "dockBtn";
+      if (id) btn.id = id;
+      btn.title = label;
+      btn.innerHTML = svgIcon(type);
+      return btn;
+    }
+
+    function svgIcon(type) {
+      if (type === "home") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
+          </svg>
+        `;
+      }
+
+      if (type === "apps") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+            <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+            <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+            <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+          </svg>
+        `;
+      }
+
+      if (type === "chat") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+          </svg>
+        `;
+      }
+
+      if (type === "music") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M4 12v4a3 3 0 0 0 3 3h1v-7H7a3 3 0 0 0-3 3"/>
+            <path d="M20 12v4a3 3 0 0 1-3 3h-1v-7h1a3 3 0 0 1 3 3"/>
+            <path d="M8 12V9a4 4 0 0 1 8 0v3"/>
+          </svg>
+        `;
+      }
+
+      if (type === "games") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M6 16l-1.5 3.5a2 2 0 0 0 2.8 2.6L10 20h4l2.7 2.1a2 2 0 0 0 2.8-2.6L18 16"/>
+            <path d="M6 16a6 6 0 0 1 12 0"/>
+            <path d="M9 13h2"/>
+            <path d="M10 12v2"/>
+            <circle cx="16.5" cy="12.5" r="0.8" fill="white"></circle>
+            <circle cx="18.5" cy="13.5" r="0.8" fill="white"></circle>
+          </svg>
+        `;
+      }
+
+      if (type === "settings") {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+            <path d="M19.4 15a7.7 7.7 0 0 0 .1-1l2-1.5-2-3.5-2.4.7a7.6 7.6 0 0 0-1.7-1l-.4-2.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-.7-2 3.5 2 1.5a7.7 7.7 0 0 0 .1 1 7.7 7.7 0 0 0-.1 1l-2 1.5 2 3.5 2.4-.7a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4.7 2-3.5-2-1.5a7.7 7.7 0 0 0-.1-1z"/>
+          </svg>
+        `;
+      }
+
+      return "";
+    }
+
+    function createMusicPanel() {
+      const panel = document.createElement("div");
+      panel.className = "musicPanel hidden";
+
+      panel.innerHTML = `
+        <div class="musicLeft">
+          <div class="albumArt">
+            <div class="musicNote">♪</div>
+          </div>
+
+          <div class="nowPlayingText">
+            <div class="songTitle">Not Playing</div>
+            <div class="songSub">Try searching on the right</div>
+          </div>
+
+          <div class="progressBar"></div>
+
+          <div class="musicControls">
+            <button class="musicBtn">⏮</button>
+            <button class="musicPlay">▶</button>
+            <button class="musicBtn">⏭</button>
+          </div>
+        </div>
+
+        <div class="musicRight">
+          <div class="musicSearchBar">
+            <span class="searchIcon">🔍</span>
+            <input type="text" placeholder="Search any song" />
+            <button class="filterBtn">≡</button>
+            <button class="hdBtn">HD</button>
+          </div>
+
+          <div class="musicResults">
+            <div class="emptyResults">No songs yet...</div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(panel);
+      return panel;
+    }
+
+    function toggleMusicPanel() {
+      if (!musicPanel) {
+        musicPanel = createMusicPanel();
+      }
+
+      musicPanelOpen = !musicPanelOpen;
+
+      if (musicPanelOpen) {
+        musicPanel.classList.remove("hidden");
+      } else {
+        musicPanel.classList.add("hidden");
+      }
+    }
+
+    // Dock buttons
+    dock.appendChild(createDockButton("home", "Home"));
+    dock.appendChild(createDockButton("apps", "Apps"));
+    dock.appendChild(createDockButton("chat", "AI Chat", "chatBtn"));
+    dock.appendChild(createDockButton("music", "Music", "musicBtn"));
+    dock.appendChild(createDockButton("games", "Game Library"));
+    dock.appendChild(createDockButton("settings", "Settings"));
+
+    // Chat toggle
+    document.getElementById("chatBtn").addEventListener("click", () => {
+      chatPanel.classList.toggle("hidden");
+    });
+
+    // Music toggle
+    document.getElementById("musicBtn").addEventListener("click", toggleMusicPanel);
+
+    // Fake chat system
+    sendBtn.addEventListener("click", () => {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      const userMsg = document.createElement("p");
+      userMsg.innerHTML = `<b>You:</b> ${msg}`;
+      chatMessages.appendChild(userMsg);
+
+      const aiMsg = document.createElement("p");
+      aiMsg.innerHTML = `<b>AI:</b> (Gemini will go here soon...)`;
+      chatMessages.appendChild(aiMsg);
+
+      chatInput.value = "";
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    // Start systems
+    updateClock();
+    setInterval(updateClock, 1000);
+    updateWeather();
+  </script>
 </body>
 </html>
