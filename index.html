@@ -9,7 +9,7 @@
 
 <script>
   // ==========================
-  // GLOBAL STYLE INJECTION
+  // GLOBAL STYLE
   // ==========================
   const style = document.createElement("style");
   style.textContent = `
@@ -25,15 +25,16 @@
       height: 100vh;
       width: 100vw;
       color: white;
+      background: black;
     }
 
     /* ===== Animated Background ===== */
     .background {
       position: fixed;
       inset: 0;
-      background: linear-gradient(120deg, #000000, #222, #111, #000);
+      background: linear-gradient(120deg, #000000, #1a1a1a, #111, #000);
       background-size: 400% 400%;
-      animation: bgMove 10s ease infinite;
+      animation: bgMove 12s ease infinite;
       z-index: -3;
     }
 
@@ -47,7 +48,7 @@
     .vignette {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.9) 90%);
+      background: radial-gradient(circle, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.95) 90%);
       z-index: -2;
     }
 
@@ -60,7 +61,7 @@
       justify-content: center;
       gap: 180px;
       font-size: 22px;
-      opacity: 0.85;
+      opacity: 0.9;
       letter-spacing: 1px;
       z-index: 5;
     }
@@ -75,50 +76,70 @@
       font-weight: 600;
       letter-spacing: 8px;
 
-      background: linear-gradient(to bottom, #ffffff, #888888);
+      background: linear-gradient(to bottom, #ffffff, #777777);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
 
-      text-shadow: 0px 0px 25px rgba(255,255,255,0.15);
-      opacity: 0.85;
+      text-shadow: 0px 0px 25px rgba(255,255,255,0.12);
+      opacity: 0.9;
       z-index: 3;
     }
 
-    /* ===== Bottom Dock ===== */
+    /* ===== Bottom Dock (SLEEK SVG ICONS) ===== */
     .dock {
       position: fixed;
-      bottom: 40px;
+      bottom: 35px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 30, 120, 0.65);
-      border-radius: 40px;
-      padding: 12px 22px;
+      padding: 14px 28px;
       display: flex;
-      gap: 22px;
+      gap: 18px;
       align-items: center;
-      box-shadow: 0px 8px 30px rgba(0,0,0,0.6);
-      backdrop-filter: blur(10px);
+
+      border-radius: 50px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(18px);
+
+      box-shadow: 0px 8px 35px rgba(0,0,0,0.65);
       z-index: 10;
     }
 
     .dock button {
-      width: 52px;
-      height: 52px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       border: none;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      font-size: 22px;
+
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0.9;
     }
 
     .dock button:hover {
-      background: rgba(255,255,255,0.18);
-      transform: scale(1.12);
+      transform: scale(1.15);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      opacity: 1;
+    }
+
+    .dock button:active {
+      transform: scale(1.05);
+    }
+
+    .dock svg {
+      width: 22px;
+      height: 22px;
+      stroke: white;
+      stroke-width: 2;
+      fill: none;
+      opacity: 0.95;
     }
 
     /* ===== Chat Panel ===== */
@@ -129,8 +150,8 @@
       width: 360px;
       height: 100vh;
       background: rgba(0,0,0,0.75);
-      border-left: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
+      border-left: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
       transition: 0.3s ease;
       z-index: 20;
       display: flex;
@@ -145,7 +166,7 @@
       padding: 18px;
       font-size: 18px;
       font-weight: bold;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -181,19 +202,19 @@
     }
 
     .msg.ai {
-      background: rgba(0, 90, 255, 0.25);
-      border: 1px solid rgba(0, 90, 255, 0.35);
+      background: rgba(0, 90, 255, 0.22);
+      border: 1px solid rgba(0, 90, 255, 0.28);
     }
 
     .msg.user {
       margin-left: auto;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
     }
 
     .chat-input {
       padding: 14px;
-      border-top: 1px solid rgba(255,255,255,0.15);
+      border-top: 1px solid rgba(255,255,255,0.12);
       display: flex;
       gap: 10px;
     }
@@ -204,7 +225,7 @@
       border-radius: 10px;
       border: none;
       outline: none;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
       color: white;
     }
 
@@ -213,17 +234,69 @@
       border-radius: 10px;
       border: none;
       cursor: pointer;
-      background: rgba(0, 90, 255, 0.7);
+      background: rgba(255,255,255,0.12);
       color: white;
       font-weight: bold;
       transition: 0.2s;
     }
 
     .chat-input button:hover {
-      background: rgba(0, 90, 255, 0.95);
+      background: rgba(255,255,255,0.18);
     }
   `;
   document.head.appendChild(style);
+
+  // ==========================
+  // SVG ICONS
+  // ==========================
+  function svgIcon(type) {
+    if (type === "home") {
+      return `
+        <svg viewBox="0 0 24 24">
+          <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
+        </svg>
+      `;
+    }
+
+    if (type === "apps") {
+      return `
+        <svg viewBox="0 0 24 24">
+          <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+          <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+          <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+          <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+        </svg>
+      `;
+    }
+
+    if (type === "chat") {
+      return `
+        <svg viewBox="0 0 24 24">
+          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+        </svg>
+      `;
+    }
+
+    if (type === "settings") {
+      return `
+        <svg viewBox="0 0 24 24">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+          <path d="M19.4 15a7.7 7.7 0 0 0 .1-1l2-1.5-2-3.5-2.4.7a7.6 7.6 0 0 0-1.7-1l-.4-2.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-.7-2 3.5 2 1.5a7.7 7.7 0 0 0 .1 1 7.7 7.7 0 0 0-.1 1l-2 1.5 2 3.5 2.4-.7a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4.7 2-3.5-2-1.5a7.7 7.7 0 0 0-.1-1z"/>
+        </svg>
+      `;
+    }
+
+    if (type === "power") {
+      return `
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2v10"/>
+          <path d="M6.4 4.9a9 9 0 1 0 11.2 0"/>
+        </svg>
+      `;
+    }
+
+    return "";
+  }
 
   // ==========================
   // HELPER FUNCTIONS
@@ -235,16 +308,16 @@
     return div;
   }
 
-  function createButton(text, title, id) {
+  function createDockButton(iconType, title, id) {
     const btn = document.createElement("button");
-    btn.textContent = text;
+    btn.innerHTML = svgIcon(iconType);
     btn.title = title;
     if (id) btn.id = id;
     return btn;
   }
 
   // ==========================
-  // BUILD UI ELEMENTS
+  // BUILD UI
   // ==========================
   const background = createDiv("background");
   const vignette = createDiv("vignette");
@@ -263,12 +336,11 @@
   logo.textContent = "VORTEX";
 
   const dock = createDiv("dock");
-  dock.appendChild(createButton("🎮", "Games"));
-  dock.appendChild(createButton("🎵", "Music"));
-  dock.appendChild(createButton("💬", "AI Chat", "chatBtn"));
-  dock.appendChild(createButton("🌐", "Browser"));
-  dock.appendChild(createButton("🎞️", "Media"));
-  dock.appendChild(createButton("⚙️", "Settings"));
+  dock.appendChild(createDockButton("home", "Home"));
+  dock.appendChild(createDockButton("apps", "Apps"));
+  dock.appendChild(createDockButton("chat", "AI Chat", "chatBtn"));
+  dock.appendChild(createDockButton("settings", "Settings"));
+  dock.appendChild(createDockButton("power", "Power"));
 
   // ==========================
   // CHAT PANEL
@@ -276,27 +348,23 @@
   const chatPanel = createDiv("chat-panel", "chatPanel");
 
   const chatHeader = createDiv("chat-header");
-  const chatTitle = document.createElement("span");
-  chatTitle.textContent = "VORTEX AI";
-
-  const closeChatBtn = createButton("✖", "Close Chat", "closeChat");
-  closeChatBtn.style.background = "transparent";
-
-  chatHeader.appendChild(chatTitle);
-  chatHeader.appendChild(closeChatBtn);
+  chatHeader.innerHTML = `
+    <span>VORTEX AI</span>
+    <button id="closeChat">✖</button>
+  `;
 
   const chatMessages = createDiv("chat-messages", "chatMessages");
-
   const firstMsg = createDiv("msg ai");
   firstMsg.textContent = "Hello 👋 I’m VORTEX AI. (Chat is still offline right now.)";
   chatMessages.appendChild(firstMsg);
 
   const chatInputWrap = createDiv("chat-input");
   const chatInput = document.createElement("input");
-  chatInput.id = "chatInput";
   chatInput.placeholder = "Type a message...";
+  chatInput.id = "chatInput";
 
-  const sendBtn = createButton("Send", "Send Message", "sendBtn");
+  const sendBtn = document.createElement("button");
+  sendBtn.textContent = "Send";
 
   chatInputWrap.appendChild(chatInput);
   chatInputWrap.appendChild(sendBtn);
@@ -306,7 +374,7 @@
   chatPanel.appendChild(chatInputWrap);
 
   // ==========================
-  // APPEND EVERYTHING TO BODY
+  // APPEND TO BODY
   // ==========================
   document.body.appendChild(background);
   document.body.appendChild(vignette);
@@ -316,14 +384,13 @@
   document.body.appendChild(chatPanel);
 
   // ==========================
-  // CLOCK (TOGGLE FORMAT)
+  // CLOCK TOGGLE
   // ==========================
   let useMilitaryTime = true;
 
   function formatTime(date) {
     let hours = date.getHours();
-    let minutes = date.getMinutes();
-    minutes = String(minutes).padStart(2, "0");
+    let minutes = String(date.getMinutes()).padStart(2, "0");
 
     if (useMilitaryTime) {
       return `${String(hours).padStart(2, "0")}:${minutes}`;
@@ -335,8 +402,7 @@
   }
 
   function updateTime() {
-    const now = new Date();
-    timeEl.textContent = formatTime(now);
+    timeEl.textContent = formatTime(new Date());
   }
 
   updateTime();
@@ -344,17 +410,6 @@
 
   timeEl.style.cursor = "pointer";
   timeEl.style.userSelect = "none";
-  timeEl.style.padding = "6px 12px";
-  timeEl.style.borderRadius = "10px";
-  timeEl.style.transition = "0.2s";
-
-  timeEl.addEventListener("mouseenter", () => {
-    timeEl.style.background = "rgba(255,255,255,0.12)";
-  });
-
-  timeEl.addEventListener("mouseleave", () => {
-    timeEl.style.background = "transparent";
-  });
 
   timeEl.addEventListener("click", () => {
     useMilitaryTime = !useMilitaryTime;
@@ -362,7 +417,7 @@
   });
 
   // ==========================
-  // WEATHER ICON FUNCTION
+  // WEATHER ICONS (TEXT ICONS)
   // ==========================
   function getWeatherIcon(code) {
     if (code === 0) return "☀️";
@@ -370,18 +425,15 @@
     if (code === 3) return "☁️";
     if ([45, 48].includes(code)) return "🌫️";
     if ([51, 53, 55].includes(code)) return "🌦️";
-    if ([56, 57].includes(code)) return "🌧️";
     if ([61, 63, 65].includes(code)) return "🌧️";
-    if ([66, 67].includes(code)) return "🌧️";
     if ([71, 73, 75, 77].includes(code)) return "❄️";
-    if ([85, 86].includes(code)) return "🌨️";
     if ([80, 81, 82].includes(code)) return "🌧️";
     if ([95, 96, 99].includes(code)) return "⛈️";
     return "🌡️";
   }
 
   // ==========================
-  // WEATHER (TOGGLE °F / °C)
+  // WEATHER TOGGLE
   // ==========================
   let useFahrenheit = true;
 
@@ -418,20 +470,18 @@
         const lon = pos.coords.longitude;
 
         try {
-          // Get weather (Celsius by default)
           const weatherUrl =
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
 
           const weatherRes = await fetch(weatherUrl);
           const weatherData = await weatherRes.json();
 
-          const tempC = Math.round(weatherData.current_weather.temperature);
+          const tempC = Math.round(weatherData.current.temperature_2m);
           const tempF = Math.round((tempC * 9) / 5 + 32);
 
-          const code = weatherData.current_weather.weathercode;
+          const code = weatherData.current.weather_code;
           const icon = getWeatherIcon(code);
 
-          // Reverse geocode city
           const geoUrl =
             `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&count=1`;
 
@@ -451,7 +501,8 @@
           tempEl.textContent = "Weather unavailable";
         }
       },
-      () => {
+      (err) => {
+        console.error("Geolocation error:", err);
         tempEl.textContent = "Location denied";
       }
     );
@@ -462,17 +513,6 @@
 
   tempEl.style.cursor = "pointer";
   tempEl.style.userSelect = "none";
-  tempEl.style.padding = "6px 12px";
-  tempEl.style.borderRadius = "10px";
-  tempEl.style.transition = "0.2s";
-
-  tempEl.addEventListener("mouseenter", () => {
-    tempEl.style.background = "rgba(255,255,255,0.12)";
-  });
-
-  tempEl.addEventListener("mouseleave", () => {
-    tempEl.style.background = "transparent";
-  });
 
   tempEl.addEventListener("click", () => {
     useFahrenheit = !useFahrenheit;
@@ -486,12 +526,12 @@
     chatPanel.classList.toggle("open");
   });
 
-  closeChatBtn.addEventListener("click", () => {
+  document.getElementById("closeChat").addEventListener("click", () => {
     chatPanel.classList.remove("open");
   });
 
   // ==========================
-  // CHAT MESSAGE SYSTEM (FAKE)
+  // FAKE CHAT SYSTEM
   // ==========================
   function addMessage(text, type) {
     const msg = document.createElement("div");
